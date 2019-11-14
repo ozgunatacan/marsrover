@@ -2,6 +2,7 @@ defmodule SimulatorTest do
   use ExUnit.Case
 
   import ExUnit.CaptureIO
+  import RoverAssertions
 
   test "simluate rovers with valid input" do
     input = """
@@ -21,13 +22,8 @@ defmodule SimulatorTest do
     # test data
     [first, second] = Simulator.simulate(input)
 
-    assert first.position == {2, 3}
-    assert first.direction == "W"
-    assert first.status == :active
-
-    assert second.position == {1, 0}
-    assert second.direction == "S"
-    assert second.status == :lost
+    assert_rover(first, {2, 3}, "W", :active)
+    assert_rover(second, {1, 0}, "S", :lost)
   end
 
   # This is my test case
@@ -51,28 +47,16 @@ defmodule SimulatorTest do
     # test data
     [first, second, third] = Simulator.simulate(input)
 
-    assert first.position == {0, 1}
-    assert first.direction == "W"
-    assert first.status == :lost
-
-    assert second.position == {4, 5}
-    assert second.direction == "E"
-    assert second.status == :lost
-
-    assert third.position == {2, 0}
-    assert third.direction == "S"
-    assert third.status == :active
+    assert_rover(first, {0, 1}, "W", :lost)
+    assert_rover(second, {4, 5}, "E", :lost)
+    assert_rover(third, {2, 0}, "S", :active)
   end
 
   test "simulate single rover with valid input" do
     rover = Simulator.simulate({4, 8}, {Rover.new({2, 3}, "N"), "FLLFR"})
-    assert rover.position == {2, 3}
-    assert rover.direction == "W"
-    assert rover.status == :active
+    assert_rover(rover, {2, 3}, "W", :active)
 
     rover = Simulator.simulate({4, 8}, {Rover.new("1", "0", "S"), "FFRLF"})
-    assert rover.position == {1, 0}
-    assert rover.direction == "S"
-    assert rover.status == :lost
+    assert_rover(rover, {1, 0}, "S", :lost)
   end
 end
